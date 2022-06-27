@@ -65,6 +65,14 @@ const classSpecificTweaks = {
                 name: 'Lich - Pet Summon fix',
                 desc: 'Fixes the UI for summoning lich pets. Should make the pet list more eye-friendly.',
             },
+            'AoE-shortcut': {
+                callback: () => {
+                    const AoE = document.querySelector('form[name="aoe"]')?.querySelector('input[name="type"][value="innate"]')?.parentNode.querySelector('input[type="submit"]');
+                    if (AoE) AoE.accessKey = "K"; else mod.debug('No AoE option found');
+                },
+                name: 'Archon/Elementalist/DH - AoE Shortcut',
+                desc: 'Enables "K" as a shortcut for AoE attacks.',
+            },
         };
 
         const mergeAlert = () => {
