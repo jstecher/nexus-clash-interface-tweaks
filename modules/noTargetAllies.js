@@ -7,20 +7,47 @@ const noTargetAllies = {
             'Allows disabling targeting factionmates/allies/friendlies on the attack selection box.',
         );
 
+        const filteredDropdown = (oldDropdown, dict, filter, optFilterCallback) => {
+            const newDropdown = oldDropdown.cloneNode(false);
+
+            for (const opt of oldDropdown.options) {
+                if (optFilterCallback && optFilterCallback(opt)) continue;
+                const value = Number(opt.value);
+                switch (dict[value]) {
+                    case 'faction':
+                        if (!filter.faction) newDropdown.appendChild(opt);
+                        else continue;
+                        break;
+                    case 'ally':
+                        if (!filter.ally) newDropdown.appendChild(opt);
+                        else continue;
+                        break;
+                    case 'friendly':
+                        if (!filter.friendly) newDropdown.appendChild(opt);
+                        else continue;
+                        break;
+                    case 'enemy':
+                        if (!filter.enemy) newDropdown.appendChild(opt);
+                        else continue;
+                        break;
+                    case 'hostile':
+                        if (!filter.hostile) newDropdown.appendChild(opt);
+                        else continue;
+                        break;
+                    default:
+                        if (!filter.other) newDropdown.appendChild(opt);
+                        else continue;
+                        break;
+                }
+                if (opt.selected) [...newDropdown.options].at(-1).selected = true;
+            }
+
+            return newDropdown;
+        }
+
         const noTargetAllies = async () => {
             const combatTargetDropdown = document.getElementById('combat_target_id');
             const petTargetDropdown = document.getElementById('pet_target_id');
-            if (!combatTargetDropdown) {
-                mod.debug('No combat target dropdown found');
-                return;
-            }
-            const noFac = await mod.getSetting('no-target-faction');
-            const noAlly = await mod.getSetting('no-target-allies');
-            const noFriend = await mod.getSetting('no-target-friendlies');
-            const noEnemy = await mod.getSetting('no-target-enemies');
-            const noHostile = await mod.getSetting('no-target-hostiles');
-            const noOther = await mod.getSetting('no-target-others');
-            const noTargetPets = await mod.getSetting('no-target-pets');
 
             const charList = document.querySelector('#AreaDescription .charListArea');
             const charListLinks = charList.querySelectorAll('[onclick^="SelectItem"],[href^="javascript:SelectItem"]');
@@ -47,42 +74,38 @@ const noTargetAllies = {
                 }
             }
 
-            const newCombatDropdown = combatTargetDropdown.cloneNode(false);
-            for (const opt of Array.from(combatTargetDropdown.options)) {
-                const charId = Number(opt.value);
-                if (charPoliticsDict[charId] == 'faction') { if (!noFac) newCombatDropdown.appendChild(opt); }
-                else if (charPoliticsDict[charId] == 'ally') { if (!noAlly) newCombatDropdown.appendChild(opt); }
-                else if (charPoliticsDict[charId] == 'friendly') { if (!noFriend) newCombatDropdown.appendChild(opt); }
-                else if (charPoliticsDict[charId] == 'enemy') { if (!noEnemy) newCombatDropdown.appendChild(opt); }
-                else if (charPoliticsDict[charId] == 'hostile') { if (!noHostile) newCombatDropdown.appendChild(opt); }
-                else { if (!noOther) newCombatDropdown.appendChild(opt); }
-            }
-            combatTargetDropdown.parentNode.replaceChild(newCombatDropdown, combatTargetDropdown);
+            if (!combatTargetDropdown) {
+                mod.debug('No combat target dropdown found');
+            } else {
+                const combatTargetFilter = {
+                    faction: await mod.getSetting('no-target-faction'),
+                    ally: await mod.getSetting('no-target-allies'),
+                    friend: await mod.getSetting('no-target-friendlies'),
+                    enemy: await mod.getSetting('no-target-enemies'),
+                    hostile: await mod.getSetting('no-target-hostiles'),
+                    other: await mod.getSetting('no-target-others'),
+                };
+                const noTargetPets = await mod.getSetting('no-target-pets');
 
-            const petList = document.querySelector('#AreaDescription .petListArea');
-            const petListLinks = petList.querySelectorAll('[href^="javascript:SelectItem"]');
-            const petPoliticsDict = {};
-            const petNameToId = {};
-            for (const link of petListLinks) {
-                const selectItem = link.href;
-                const petId = Number(selectItem.toString().match(/\d+/)[0]);
-                let petPolitics = link.className;
-                petPolitics = petPolitics ? petPolitics : 'other';
-                petPoliticsDict[petId] = petPolitics;
-            }
+                const newCombatDropdown = filteredDropdown(combatTargetDropdown, charPoliticsDict, combatTargetFilter);
+                combatTargetDropdown.parentNode.replaceChild(newCombatDropdown, combatTargetDropdown);
 
-            if (noTargetPets && petTargetDropdown) {
-                const newPetDropdown = petTargetDropdown.cloneNode(false);
-                for (const opt of Array.from(petTargetDropdown.options)) {
-                    const petId = Number(opt.value);
-                    if (petPoliticsDict[petId] == 'faction') { if (!noFac) newPetDropdown.appendChild(opt); }
-                    else if (petPoliticsDict[petId] == 'ally') { if (!noAlly) newPetDropdown.appendChild(opt); }
-                    else if (petPoliticsDict[petId] == 'friendly') { if (!noFriend) newPetDropdown.appendChild(opt); }
-                    else if (petPoliticsDict[petId] == 'enemy') { if (!noEnemy) newPetDropdown.appendChild(opt); }
-                    else if (petPoliticsDict[petId] == 'hostile') { if (!noHostile) newPetDropdown.appendChild(opt); }
-                    else { if (!noOther) newPetDropdown.appendChild(opt); }
+                if (noTargetPets && petTargetDropdown) {
+                    const petList = document.querySelector('#AreaDescription .petListArea');
+                    const petListLinks = petList.querySelectorAll('[href^="javascript:SelectItem"]');
+                    const petPoliticsDict = {};
+                    const petNameToId = {};
+                    for (const link of petListLinks) {
+                        const selectItem = link.href;
+                        const petId = Number(selectItem.toString().match(/\d+/)[0]);
+                        let petPolitics = link.className;
+                        petPolitics = petPolitics ? petPolitics : 'other';
+                        petPoliticsDict[petId] = petPolitics;
+                    }
+
+                    const newPetDropdown = filteredDropdown(petTargetDropdown, petPoliticsDict, combatTargetFilter);
+                    petTargetDropdown.parentNode.replaceChild(newPetDropdown, petTargetDropdown);
                 }
-                petTargetDropdown.parentNode.replaceChild(newPetDropdown, petTargetDropdown);
             }
 
             const healTargetDropdowns = [];
@@ -91,7 +114,6 @@ const noTargetAllies = {
                 'form[name="Surgery"] select[name="target_id"]',
                 'form[name="Heal Others"] select[name="target_id"]',
                 'form[name="Energize"] select[name="target_id"]',
-                'form[name="give"] select[name="target_id"]',
             ];
             for (const selector of healDropdownSelectors) {
                 const dropdown = document.querySelector(selector);
@@ -99,47 +121,70 @@ const noTargetAllies = {
             }
             if (healTargetDropdowns.length === 0) {
                 mod.debug('No heal target dropdown found');
-                return;
-            }
+            } else {
 
-            const noHealFac = await mod.getSetting('no-heal-faction');
-            const noHealAlly = await mod.getSetting('no-heal-allies');
-            const noHealFriend = await mod.getSetting('no-heal-friendlies');
-            const noHealEnemy = await mod.getSetting('no-heal-enemies');
-            const noHealHostile = await mod.getSetting('no-heal-hostiles');
-            const noHealOther = await mod.getSetting('no-heal-others');
-            const ht = await mod.getSetting('healing-threshold')
-            const healingThreshold = Number(ht) ? Number(ht) : 0;
-            const noHealSM = await mod.getSetting('no-heal-SM');
-            for (const dropdown of healTargetDropdowns) {
-                const newHealDropdown = dropdown.cloneNode(false);
-                for (const opt of Array.from(dropdown.options)) {
+                const healTargetFilter = {
+                    faction: await mod.getSetting('no-heal-faction'),
+                    ally: await mod.getSetting('no-heal-allies'),
+                    friend: await mod.getSetting('no-heal-friendlies'),
+                    enemy: await mod.getSetting('no-heal-enemies'),
+                    hostile: await mod.getSetting('no-heal-hostiles'),
+                    other: await mod.getSetting('no-heal-others'),
+                };
+                const ht = await mod.getSetting('healing-threshold')
+                const healingThreshold = Number(ht) ? Number(ht) : 0;
+                const noHealSM = await mod.getSetting('no-heal-SM');
+                const healFilterCallback = (opt) => {
                     const charId = Number(opt.value);
-
                     if (healingThreshold > 0) { // If there's a healing threshold
                         const matchHP = opt.textContent.match(/\((?<currHP>\d+)\/(?<maxHP>\d+) HP\)/);
                         if (matchHP) { // If we can read a target's HP
                             // If the target is missing less health than the threshold
                             // Then skip target from healing dropdown
-                            if (Number(matchHP.groups.maxHP) - Number(matchHP.groups.currHP) < healingThreshold) continue;
+                            if (Number(matchHP.groups.maxHP) - Number(matchHP.groups.currHP) < healingThreshold) return true;
                         }
                     }
                     if (charId in SMDict) {
-                        if (noHealSM) continue;
+                        if (noHealSM) return true;
                         opt.textContent += ` (SM ${SMDict[charId]})`;
                     }
+                    return false;
+                };
 
-                    if (charPoliticsDict[charId] == 'faction') { if (!noHealFac) newHealDropdown.appendChild(opt); }
-                    else if (charPoliticsDict[charId] == 'ally') { if (!noHealAlly) newHealDropdown.appendChild(opt); }
-                    else if (charPoliticsDict[charId] == 'friendly') { if (!noHealFriend) newHealDropdown.appendChild(opt); }
-                    else if (charPoliticsDict[charId] == 'enemy') { if (!noHealEnemy) newHealDropdown.appendChild(opt); }
-                    else if (charPoliticsDict[charId] == 'hostile') { if (!noHealHostile) newHealDropdown.appendChild(opt); }
-                    else { if (!noHealOther) newHealDropdown.appendChild(opt); }
+                for (const healTargetDropdown of healTargetDropdowns) {
+                    const newHealDropdown = filteredDropdown(healTargetDropdown, charPoliticsDict, healTargetFilter, healFilterCallback);
+                    healTargetDropdown.parentNode.replaceChild(newHealDropdown, healTargetDropdown);
                 }
-                dropdown.parentNode.replaceChild(newHealDropdown, dropdown);
+            }
+
+            const miscTargetDropdowns = [];
+            const miscDropdownSelectors = [
+                'form[name="give"] select[name="target_id"]',
+            ];
+            for (const selector of miscDropdownSelectors) {
+                const dropdown = document.querySelector(selector);
+                if (dropdown) miscTargetDropdowns.push(dropdown);
+            }
+            if (miscTargetDropdowns.length === 0) {
+                mod.debug('No misc target dropdown found');
+            } else {
+                const miscTargetFilter = {
+                    faction: await mod.getSetting('no-misc-faction'),
+                    ally: await mod.getSetting('no-misc-allies'),
+                    friend: await mod.getSetting('no-misc-friendlies'),
+                    enemy: await mod.getSetting('no-misc-enemies'),
+                    hostile: await mod.getSetting('no-misc-hostiles'),
+                    other: await mod.getSetting('no-misc-others'),
+                };
+
+                for (const miscTargetDropdown of miscTargetDropdowns) {
+                    const newMiscDropdown = filteredDropdown(miscTargetDropdown, charPoliticsDict, miscTargetFilter);
+                    miscTargetDropdown.parentNode.replaceChild(newMiscDropdown, miscTargetDropdown);
+                }
             }
         }
 
+        // Combat settings
         await mod.registerSetting(
             'checkbox',
             'no-target-faction',
@@ -176,12 +221,15 @@ const noTargetAllies = {
             'Prevent Targeting Others',
             ''
         );
+
         await mod.registerSetting(
             'checkbox',
             'no-target-pets',
             'Apply to Pet dropdown',
             ''
         );
+
+        // Heal settings
         await mod.registerSetting(
             'checkbox',
             'no-heal-faction',
@@ -229,6 +277,44 @@ const noTargetAllies = {
             'no-heal-SM',
             'No SM Healing',
             'Characters under SM effects won\'t be shown on healing dropdowns.'
+        );
+
+        // Give settings
+        await mod.registerSetting(
+            'checkbox',
+            'no-misc-faction',
+            'Prevent Giving Items To Factionmates',
+            ''
+        );
+        await mod.registerSetting(
+            'checkbox',
+            'no-misc-allies',
+            'Prevent Giving Items To Allies',
+            ''
+        );
+        await mod.registerSetting(
+            'checkbox',
+            'no-misc-friendlies',
+            'Prevent Giving Items To Friendlies',
+            ''
+        );
+        await mod.registerSetting(
+            'checkbox',
+            'no-misc-enemies',
+            'Prevent Giving Items To Enemies',
+            ''
+        );
+        await mod.registerSetting(
+            'checkbox',
+            'no-misc-hostiles',
+            'Prevent Giving Items To Hostiles',
+            ''
+        );
+        await mod.registerSetting(
+            'checkbox',
+            'no-misc-others',
+            'Prevent Giving Items To Others',
+            ''
         );
 
         await mod.registerMethod(
