@@ -10,32 +10,32 @@ const noTargetAllies = {
         const filteredDropdown = (oldDropdown, dict, filter, optFilterCallback) => {
             const newDropdown = oldDropdown.cloneNode(false);
 
-            for (const opt of oldDropdown.options) {
+            for (const opt of [...oldDropdown.options]) {
                 if (optFilterCallback && optFilterCallback(opt)) continue;
                 const value = Number(opt.value);
                 switch (dict[value]) {
                     case 'faction':
-                        if (!filter.faction) newDropdown.appendChild(opt);
+                        if (!filter.faction) newDropdown.options.add(opt);
                         else continue;
                         break;
                     case 'ally':
-                        if (!filter.ally) newDropdown.appendChild(opt);
+                        if (!filter.ally) newDropdown.options.add(opt);
                         else continue;
                         break;
                     case 'friendly':
-                        if (!filter.friendly) newDropdown.appendChild(opt);
+                        if (!filter.friendly) newDropdown.options.add(opt);
                         else continue;
                         break;
                     case 'enemy':
-                        if (!filter.enemy) newDropdown.appendChild(opt);
+                        if (!filter.enemy) newDropdown.options.add(opt);
                         else continue;
                         break;
                     case 'hostile':
-                        if (!filter.hostile) newDropdown.appendChild(opt);
+                        if (!filter.hostile) newDropdown.options.add(opt);
                         else continue;
                         break;
                     default:
-                        if (!filter.other) newDropdown.appendChild(opt);
+                        if (!filter.other) newDropdown.options.add(opt);
                         else continue;
                         break;
                 }
