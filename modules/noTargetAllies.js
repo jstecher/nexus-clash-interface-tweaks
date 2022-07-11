@@ -9,6 +9,8 @@ const noTargetAllies = {
 
         const filteredDropdown = (oldDropdown, dict, filter, optFilterCallback) => {
             const newDropdown = oldDropdown.cloneNode(false);
+            const selected = oldDropdown.options[oldDropdown.selectedIndex];
+            let selectIndex = 0;
 
             for (const opt of [...oldDropdown.options]) {
                 if (optFilterCallback && optFilterCallback(opt)) continue;
@@ -39,8 +41,9 @@ const noTargetAllies = {
                         else continue;
                         break;
                 }
-                if (opt.selected) [...newDropdown.options].at(-1).selected = true;
+                if (opt === selected) selectIndex = newDropdown.length - 1;
             }
+            newDropdown.selectedIndex = selectIndex;
 
             return newDropdown;
         }
