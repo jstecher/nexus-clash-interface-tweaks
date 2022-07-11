@@ -41,6 +41,7 @@ const alchPanel = {
                 const rComp = span.appendChild(researchComp.cloneNode(true));
                 rComp.style.width = '100%';
                 rComp.onchange = function() {
+                    if (this.options.length === 0) return;
                     rComp.className = 'alchemy-comp ' + this.options[this.selectedIndex].className;
                     // const style = document.defaultView.getComputedStyle(this.options[this.selectedIndex], '');
                     // this.style.color = style.color;
@@ -68,6 +69,7 @@ const alchPanel = {
                     tComp.style.width = '63%';
                     tComp.style.display = 'inline-block';
                     tComp.onchange = function() {
+                        if (this.options.length === 0) return;
                         tComp.className = 'alchemy-comp ' + this.options[this.selectedIndex].className;
                         // const style = document.defaultView.getComputedStyle(this.options[this.selectedIndex], '');
                         // this.style.color = style.color;
@@ -229,6 +231,7 @@ const alchPanel = {
                         // const style = document.defaultView.getComputedStyle(this.options[this.selectedIndex], '');
                         // this.style.color = style.color;
                         // this.style.backgroundColor = style.backgroundColor;
+                        if (this.options.length === 0) return;
                         this.className = 'alchemy-comp ' + this.options[this.selectedIndex].className;
                     }
                     compList.onchange();
@@ -247,6 +250,7 @@ const alchPanel = {
                     // const style = document.defaultView.getComputedStyle(this.options[this.selectedIndex], '');
                     // this.style.color = style.color;
                     // this.style.backgroundColor = style.backgroundColor;
+                    if (this.options.length === 0) return;
                     this.className = 'alchemy-comp ' + this.options[this.selectedIndex].className;
                 }
                 transTo.onchange();
