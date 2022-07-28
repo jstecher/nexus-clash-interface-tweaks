@@ -6,7 +6,7 @@ function NexusTweaksScaffolding(scriptId, scriptName, scriptLink, scriptVersion)
   // Given how GM does apparently ignore the metadata block on @require scripts, it could possibly be removed
   // Leaving it here for backwards-compatibility, in case any scripts need it
   this.version = `${GM.info.script.version}`;
-  this.APIversion = '2.0.0';
+  this.APIversion = '2.0.1';
   this.APIname = 'Nexus Tweaks API & Scaffolding';
   this.APIhomepage = 'https://github.com/Argavyon/nexus-clash-interface-tweaks/tree/preview';
   // logs to console; can disable if you want
@@ -63,6 +63,7 @@ function NexusTweaksScaffolding(scriptId, scriptName, scriptLink, scriptVersion)
     'level':null,
     'class':null,
     'id':null,
+    'name':null,
     'ap':null,
     'mp':null,
     'hp':null,
@@ -378,6 +379,7 @@ function NexusTweaksScaffolding(scriptId, scriptName, scriptLink, scriptVersion)
       this.inGame = true;
       this.charinfo.div = document.getElementById('CharacterInfo');
       this.charinfo.id = this.charinfo.div.getElementsByTagName('a')[0].href.match(/character&id=(\d+)$/)[1];
+      this.charinfo.name = this.charinfo.div.getElementsByTagName('a')[0].text;
 
       const levelclass = this.charinfo.div.getElementsByTagName('td')[2];
       const levelclassdata = /Level ([0-9]{1,3}) (.+)/.exec(levelclass.innerHTML);
