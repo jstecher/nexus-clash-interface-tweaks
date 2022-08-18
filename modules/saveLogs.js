@@ -47,7 +47,8 @@ const saveLogs = {
                         var htmlDoc = parser.parseFromString(response.responseText, 'text/html');
                         const logDiv = htmlDoc.querySelector('div#Messages');
                         const logs = logDiv.textContent;
-                        download(`NC logs ${getFullYear()}-${getMonth()+1}-${getDate()} ${api.charinfo.name}.txt`, logs);
+                        const d = new Date();
+                        download(`NC logs ${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()} ${api.charinfo.name}.txt`, logs);
                     });
                 };
             });
