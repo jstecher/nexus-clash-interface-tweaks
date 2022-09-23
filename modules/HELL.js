@@ -50,9 +50,9 @@ const HELL = {
         }
 
         // Dear Grid Square
-        if (mod.API.charinfo.class && mod.API.charinfo.id && mod.API.charinfo.class.includes('Void Walker') && mod.API.charinfo.id === '13227') {
-            mod.isEnabled().then(enabled => { if (!enabled) HELL(); });
-        }
+        // if (mod.API.charinfo.class && mod.API.charinfo.id && mod.API.charinfo.class.includes('Void Walker') && mod.API.charinfo.id === '13227') {
+        //     mod.isEnabled().then(enabled => { if (!enabled) HELL(); });
+        // }
 
         api.addGlobalStyle(await GM.getResourceUrl('HELLCSS'));
 
