@@ -13,6 +13,7 @@ const inPain = {
             const threshold = 0.75;
             const f = hp / maxHP;
             if (f > threshold) return [maxGB, maxGB, maxGB];
+            if (f == 0) return [170, 170, 170];
             const GB = Math.ceil(Math.max(0, maxGB - (1-f)*slide));
             const R = Math.ceil(Math.min(255, maxGB - (1-f)*slide + 255));
             return [R,GB,GB];

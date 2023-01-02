@@ -67,12 +67,20 @@ const classSpecificTweaks = {
             },
             'AoE-shortcut': {
                 callback: () => {
-                    const AoE = document.querySelector('form[name="aoe"]')?.querySelector('input[name="type"][value="innate"]')?.parentNode.querySelector('input[type="submit"]');
+                    const AoE = [...document.querySelectorAll('form[name="aoe"]')].at(-1)?.querySelector('input[name="type"][value="innate"]')?.parentNode.querySelector('input[type="submit"]');
                     if (AoE) AoE.accessKey = "K"; else mod.debug('No AoE option found');
                 },
                 name: 'Archon/Elementalist/DH - AoE Shortcut',
                 desc: 'Enables "K" as a shortcut for AoE attacks.',
             },
+            'spreadWings': {
+                callback: () => {
+                    const fly = document.querySelector('input[type="submit"][value^="Fly"]');
+                    if (fly) fly.accessKey = 'C';
+                },
+                name: 'Spread Your Wings',
+                desc: 'Adds C as fly hotkey.'
+            }
         };
 
         const mergeAlert = () => {

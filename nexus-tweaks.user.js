@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        AnneTrue's Nexus Tweaks
-// @version     3.0.0
+// @version     3.0.1
 // @description Tweaks for Nexus Clash's UI
 // @namespace   https://github.com/AnneTrue/
 // @author      Anne True
@@ -38,6 +38,7 @@
 // @require     modules/descriptionHighlight.js
 // @require     modules/easyUsePane.js
 // @require     modules/HELL.js
+// @require     modules/hotkeyCheatsheet.js
 // @require     modules/improvedPurchaseSkills.js
 // @require     modules/improvePetDisplay.js
 // @require     modules/inPain.js
@@ -103,6 +104,7 @@ promiseList.push(bloodhoundFix.module(minorFixes));
 promiseList.push(charIconSelect.module(minorFixes));
 promiseList.push(collapseReleased.module(minorFixes));
 promiseList.push(defaultSetAllPetStance.module(minorFixes));
+promiseList.push(hotkeyCheatsheet.module(minorFixes));
 promiseList.push(improvedPurchaseSkills.module(minorFixes));
 promiseList.push(mapDoor.module(minorFixes));
 promiseList.push(messagePaneResize.module(minorFixes));

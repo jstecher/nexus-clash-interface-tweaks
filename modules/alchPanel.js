@@ -54,7 +54,7 @@ const alchPanel = {
                 rButton.onclick = function() {
                     researchComp.value = rComp.value;
                     researchPotion.value = recipeName;
-                    mod.setValue('alchemy-alarm', 1).then(researchButton.click());
+                    researchButton.click();
                 }
             }
             else if (grade == 6) { // fully researched
@@ -305,24 +305,10 @@ const alchPanel = {
 
         const EnhancedAlchemyPanel = () => {
             'use strict';
-            mod.getValue('alchemy-alarm').then(async alarm => {
-                // mod.debug(`Alchemy Alarm: ${alarm}`);
-                if (await mod.getSetting('HP-warning')) {
-                    if (alarm && mod.API.charinfo.hp && mod.API.charinfo.hp < 20) alert('Your HP is low from performing alchemy');
-                    else mod.setValue('alchemy-alarm', 0);
-                } else mod.setValue('alchemy-alarm', 0);
-            });
             const trackerNode = document.getElementById('recipe-tracker');
             if (trackerNode) EnhancedAlchemyPanelUI(trackerNode);
             else mod.debug('No Recipe Tracker found');
         }
-
-        await mod.registerSetting(
-            'checkbox',
-            'HP-warning',
-            'Low HP warning',
-            'Warns you after performing alchemy and ending with low HP.'
-        );
 
         await mod.registerMethod(
             'sync',
