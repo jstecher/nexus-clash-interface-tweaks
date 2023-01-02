@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        AnneTrue's Nexus Tweaks
-// @version     3.0.1
+// @version     3.0.2
 // @description Tweaks for Nexus Clash's UI
 // @namespace   https://github.com/AnneTrue/
 // @author      Anne True
@@ -42,8 +42,6 @@
 // @require     modules/improvedPurchaseSkills.js
 // @require     modules/improvePetDisplay.js
 // @require     modules/inPain.js
-// @require     modules/inventorySort.js
-// @require     modules/inventoryTweaks.js
 // @require     modules/mapDoor.js
 // @require     modules/messagePaneResize.js
 // @require     modules/messageStyle.js
@@ -74,7 +72,6 @@ const nexusTweaks = new NexusTweaksScaffolding(
 promiseList.push(characterList.module(nexusTweaks));
 promiseList.push(classifyBadges.module(nexusTweaks));
 promiseList.push(descriptionHighlight.module(nexusTweaks));
-promiseList.push(inventoryTweaks.module(nexusTweaks));
 promiseList.push(messageStyle.module(nexusTweaks));
 promiseList.push(safeSpeech.module(nexusTweaks));
 promiseList.push(thinBars.module(nexusTweaks));
@@ -125,7 +122,6 @@ promiseList.push(colorStatus.module(majorFixes));
 promiseList.push(easyUsePane.module(majorFixes));
 promiseList.push(improvePetDisplay.module(majorFixes));
 promiseList.push(inPain.module(majorFixes));
-promiseList.push(inventorySort.module(majorFixes));
 promiseList.push(noTargetAllies.module(majorFixes));
 promiseList.push(sortSafeSpells.module(majorFixes));
 
