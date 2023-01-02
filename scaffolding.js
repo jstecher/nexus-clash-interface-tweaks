@@ -6,7 +6,7 @@ function NexusTweaksScaffolding(scriptId, scriptName, scriptLink, scriptVersion)
   // Given how GM does apparently ignore the metadata block on @require scripts, it could possibly be removed
   // Leaving it here for backwards-compatibility, in case any scripts need it
   this.version = `${GM.info.script.version}`;
-  this.APIversion = '2.0.1';
+  this.APIversion = '3.0.0';
   this.APIname = 'Nexus Tweaks API & Scaffolding';
   this.APIhomepage = 'https://github.com/Argavyon/nexus-clash-interface-tweaks/tree/preview';
   // logs to console; can disable if you want
@@ -177,7 +177,13 @@ function NexusTweaksScaffolding(scriptId, scriptName, scriptLink, scriptVersion)
 
 
   const createSettingsPane = async (table) => {
-    table.appendChild(document.createElement('tr'));
+    const oldTable = document.getElementById('Sidebar_NexusTweaksSettings');
+    if (oldTable) {
+      oldTable.innerHTML = '';
+    } else {
+      table.appendChild(document.createElement('tr'));
+      table.lastElementChild.id = 'Sidebar_NexusTweaksSettings';
+    }
     table.lastElementChild.appendChild(document.createElement('td'));
 
     const temptable = document.createElement('table');
@@ -234,7 +240,7 @@ function NexusTweaksScaffolding(scriptId, scriptName, scriptLink, scriptVersion)
       this.debug('[API] No sidebar detected');
       return;
     }
-
+    const sidebar_panes = document.querySelector('#Sidebar_Panes');
     const paneButton = sidebar.querySelector('tbody>tr').appendChild(document.createElement('td')).appendChild(document.createElement('input'));
     if (paneID) paneButton.id = `${paneID}-button`;
     paneButton.value = paneName;
@@ -244,27 +250,41 @@ function NexusTweaksScaffolding(scriptId, scriptName, scriptLink, scriptVersion)
     if (paneID) paneTable.id = paneID;
     if (paneClass) paneTable.className = paneClass;
 
-    paneButton.onclick = function() {
-      const sidebarRow = sidebar.parentNode.parentNode; // the sidebar is a table within a td within a tr, sidebarRow is said tr
-      while (sidebarRow.nextSibling) sidebarRow.nextSibling.remove();
-      sidebarRow.parentNode.appendChild(document.createElement('tr')).appendChild(document.createElement('td')).appendChild(paneTable);
+    if (sidebar_panes) {
+      const paneTR = sidebar_panes.appendChild(document.createElement('tr'));
+      paneTR.hidden = true;
+      paneTR.id = `Sidebar_${paneName}`;
+      paneTR.appendChild(document.createElement('td')).appendChild(paneTable);
+      paneButton.onclick = function() {
+        [...document.getElementById('Sidebar_Panes').children].forEach(pane => {
+          pane.hidden = (pane.id != `Sidebar_${paneName}`);
+        });
+      }
+    } else {
+      paneButton.onclick = function() {
+        const sidebarRow = sidebar.parentNode.parentNode; // the sidebar is a table within a td within a tr, sidebarRow is said tr
+        while (sidebarRow.nextSibling) sidebarRow.nextSibling.remove();
+        sidebarRow.parentNode.appendChild(document.createElement('tr')).appendChild(document.createElement('td')).appendChild(paneTable);
+      }
     }
+
+
 
     return {table: paneTable, button: paneButton};
   }
-  
-  
+
+
   this.getPaneByTitle = (title) => {
     return [...document.querySelectorAll('div.panetitle')].find(p => p.textContent.startsWith(title));
   }
-  
-  
+
+
   this.getPaneById = (id) => {
     const paneLabel = document.querySelector(`div.panetitle label[for="${id}"]`);
     return paneLabel ? paneLabel.parentElement.parentElement : undefined;
   }
-  
-  
+
+
   this.createPane = (paneName, paneId, nextPane) => {
     const panetitle = document.querySelector('#main-left').insertBefore(document.createElement('div'), nextPane);
     panetitle.className = 'panetitle';
@@ -278,12 +298,12 @@ function NexusTweaksScaffolding(scriptId, scriptName, scriptLink, scriptVersion)
     label_inp3.src = 'images/g/inf/close.gif';
     label_inp3.alt = '-';
     label_inp3.border = '0';
-    
+
     const baseClosedSettingName = `paneclosed-${paneId}`;
     let closedSettingName = '';
     if (this.charinfo.id) closedSettingName = this.getLocalSettingName(baseClosedSettingName);
     else closedSettingName = this.getGlobalSettingName(baseClosedSettingName);
-    
+
     const APIsetSetting = this.setSetting;
     panetitle.onclick = function() {
       panetitle.classList.toggle('paneclosed');
@@ -292,7 +312,7 @@ function NexusTweaksScaffolding(scriptId, scriptName, scriptLink, scriptVersion)
       label_inp3.alt = paneClosed ? '+' : '-';
       if (paneId) APIsetSetting(closedSettingName, paneClosed);
     }
-    
+
     this.getSetting(closedSettingName).then(paneClosed => { if (paneClosed) panetitle.click() });
 
     const panecontent = document.querySelector('#main-left').insertBefore(document.createElement('div'), nextPane);
@@ -315,21 +335,36 @@ function NexusTweaksScaffolding(scriptId, scriptName, scriptLink, scriptVersion)
       SettingsTabButton.id = 'nexus-tweaks-settings-button';
       SettingsTabButton.value = 'Nexus Tweaks';
       SettingsTabButton.type = 'button';
-      SettingsTabButton.onclick = async function() {
-        const mainRightTBody = document.querySelector('#main-right table tbody');
-        while (mainRightTBody.children[2]) mainRightTBody.removeChild(mainRightTBody.children[2]); // Clear the right pane under the tab buttons
-        await createSettingsPane(mainRightTBody); // It's important to synchronize this, as it creates the table for mod settings
-        let nextPaneButton = this.parentNode.firstElementChild;
-        while (nextPaneButton) {
-          if (nextPaneButton.id !== SettingsTabButton.id) nextPaneButton.click();
-          nextPaneButton = nextPaneButton.nextSibling;
+      const sidebarPanes = document.querySelector('#Sidebar_Panes');
+      if (sidebarPanes) {
+        SettingsTabButton.onclick = async function() {
+          await createSettingsPane(sidebarPanes); // It's important to synchronize this, as it creates the table for mod settings
+          let nextPaneButton = this.parentNode.firstElementChild;
+          while (nextPaneButton) {
+            if (nextPaneButton.id !== SettingsTabButton.id) nextPaneButton.click();
+            nextPaneButton = nextPaneButton.nextSibling;
+          }
+
+          [...document.getElementById("Sidebar_Panes").children].forEach(pane => {
+            pane.hidden = (pane.id != `Sidebar_NexusTweaksSettings`);
+          });
+        }
+      } else {
+        SettingsTabButton.onclick = async function() {
+          const mainRightTBody = document.querySelector('#main-right table tbody');
+          while (mainRightTBody.children[2]) mainRightTBody.removeChild(mainRightTBody.children[2]); // Clear the right pane under the tab buttons
+          await createSettingsPane(mainRightTBody); // It's important to synchronize this, as it creates the table for mod settings
+          let nextPaneButton = this.parentNode.firstElementChild;
+          while (nextPaneButton) {
+            if (nextPaneButton.id !== SettingsTabButton.id) nextPaneButton.click();
+            nextPaneButton = nextPaneButton.nextSibling;
+          }
         }
       }
     }
     const ModSettingsButton = SettingsTabButton.parentNode.appendChild(document.createElement('input'));
-    ModSettingsButton.hidden = true;
+    ModSettingsButton.type = 'hidden';
     ModSettingsButton.onclick = function () {
-      const mainRightTBody = document.getElementById('main-right').firstElementChild.firstElementChild;
       addModSettings(document.getElementById('nexus-tweaks-settingtable'));
     }
   }
