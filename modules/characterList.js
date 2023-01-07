@@ -272,8 +272,7 @@ const characterList = {
             const maxBarValue = Math.max(
                 Math.max(person.currentHp, person.maxHp),
                 Math.max(person.currentMp, person.maxMp));
-            // const estimatedAvailableSpace = 160 - estimatedStatusLength;
-            const estimatedAvailableSpace = 71;
+            const estimatedAvailableSpace = 141 - estimatedStatusLength;
             let scalingFactor = 1;
             if (maxBarValue > estimatedAvailableSpace) {
                 scalingFactor = estimatedAvailableSpace / maxBarValue;
@@ -296,7 +295,9 @@ const characterList = {
             const currentHpOffset = getPixelOffset(person.currentHp);
             const maxHpOffset = getPixelOffset(person.maxHp);
             const levelOrRank = person.rank ? person.rank : person.level;
-
+            const splitClass = person.class.split(' ');
+            const firstLength = splitClass.length > 1 ? 2 : 3;
+            const abbrevClass = splitClass[0].substring(0, firstLength) + (splitClass.length > 1 ? splitClass[1].substring(0, 1) : '');
             // create html for character
             let resultHtml = `
         <div class="char-div">
@@ -304,10 +305,9 @@ const characterList = {
           <a href="https://nexusclash.com/clash.php?op=character&id=${person.id}"
            target="_blank">${levelOrRank}</a>
         </div>
-        <div class="class-div"
-        style="float: right";>
+        <div class="char-div-element charclass-div">
           <a href="https://nexusclash.com/clash.php?op=character&id=${person.id}"
-           target="_blank">${person.class}</a>
+           target="_blank">${abbrevClass}</a>
         </div>
         <div class="char-div-element name-div politics-${person.politics}"
         onclick="SelectItem(\'target_id\',\'${person.id}\')">
@@ -329,7 +329,7 @@ const characterList = {
             // optionally add hurt animation
             if (person.currentHp < person.previousHp) {
                 const hurtWidth = (previousHpOffset - currentHpOffset) * scalingFactor;
-                const offset = 188 + (currentHpOffset + 1) * scalingFactor;
+                const offset = 209 + (currentHpOffset + 1) * scalingFactor;
                 resultHtml = resultHtml + `
         <div title="${person.hpTooltip}"
         class="char-div-element hp-div hp-div-hurt"
@@ -341,7 +341,7 @@ const characterList = {
             // optionally add heal animation
             if (person.currentHp > person.previousHp) {
                 const healWidth = (currentHpOffset - previousHpOffset) * scalingFactor;
-                const offset = 188 + (previousHpOffset + 1) * scalingFactor;
+                const offset = 209 + (previousHpOffset + 1) * scalingFactor;
                 resultHtml = resultHtml + `
         <div title="${person.hpTooltip}"
         class="char-div-element hp-div hp-div-heal"
@@ -371,7 +371,7 @@ const characterList = {
                 hpseg < (Math.max(maxHpOffset, currentHpOffset)); hpseg = hpseg + 11) {
                 resultHtml = resultHtml + `
         <div class="char-div-element bar-segments-div"
-        style="left: ${188 + hpseg * scalingFactor}px;">
+        style="left: ${209 + hpseg * scalingFactor}px;">
         </div>
         `;
             }
