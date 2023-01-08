@@ -71,7 +71,7 @@
 .level-div {
   text-align: center;
   vertical-align: middle;
-  width: 24px;
+  width: 19px;
   border-right: 1px solid white;
   left: 0;
 }
@@ -80,12 +80,24 @@
   text-decoration: none;
 }
 
+.charclass-div {
+  text-align: center;
+  vertical-align: middle;
+  width: 29px;
+  border-right: 1px solid white;
+  left: 20px;
+}
+
+.charclass-div a {
+  text-decoration: none;
+}
+
 .name-div {
   text-align: center;
   vertical-align: middle;
-  width: 159px;
+  width: 154px;
   border-right: 1px solid white;
-  left: 25px;
+  left: 50px;
   cursor: pointer;
 }
 
@@ -100,7 +112,7 @@
   top: 2px;
   height: 11px;
   width: 1px;
-  left: 188px;
+  left: 209px;
   background-color: #000000;
   z-index: 45;
   pointer-events: none;
@@ -109,7 +121,7 @@
 .hp-div {
   top: 2px;
   height: 9px;
-  left: 188px;
+  left: 209px;
 }
 
 .hp-div-max {
@@ -187,7 +199,7 @@
 .mp-div {
   top: 8px;
   height: 3px;
-  left: 188px;
+  left: 209px;
 }
 
 .mp-div-max {
