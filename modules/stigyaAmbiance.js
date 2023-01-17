@@ -18,7 +18,7 @@ const stigyaAmbiance = {
                         hellBanner.src = 'https://media1.tenor.com/images/e03e205229123dff188e4d58f683b91e/tenor.gif';
                     }});
                     mod.getSetting('with-music').then(enabled => { if (enabled) {
-                        const audio = new Audio('https://github.com/Argavyon/nexus-clash-interface-tweaks/raw/preview/media/fighting hell & warriors.mp3');
+                        const audio = new Audio('https://github.com/Argavyon/nexus-clash-interface-tweaks/raw/main/media/fighting hell & warriors.mp3');
                         audio.loop = true;
                         audio.play();
                     }});
