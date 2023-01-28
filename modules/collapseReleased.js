@@ -25,7 +25,7 @@ const collapseReleased = {
             const releasedChars = [];
             H2text.hidden = true;
             // The first one is actually the AP/HP/MP/... header for released characters
-            let nextReleasedChar = releasedH2.parentNode.parentNode.nextSibling;
+            let nextReleasedChar = releasedH2.parentNode.parentNode.nextElementSibling;
             while (!nextReleasedChar.querySelector('form[name="create_character"]')) {
                 nextReleasedChar.hidden = true;
                 releasedChars.push(nextReleasedChar);
