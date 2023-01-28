@@ -333,11 +333,11 @@ const colorStatus = {
         const colorStatusPane = async (mod) => {
             const charInfo = document.getElementById('CharacterInfo');
             if (!charInfo) return;
-            const statusPane = charInfo.querySelector('tbody').lastChild;
-            for (const status of statusPane.firstChild.children) {
+            const statusPane = charInfo.querySelector('tbody').lastElementChild;
+            for (const status of statusPane.firstElementChild.children) {
                 colorStatus(status);
             }
-            for (const status of statusPane.firstChild.children) {
+            for (const status of statusPane.firstElementChild.children) {
                 setTitle(status, statusDesc);
             }
         }
