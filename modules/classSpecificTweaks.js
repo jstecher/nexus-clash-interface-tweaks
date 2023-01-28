@@ -75,7 +75,7 @@ const classSpecificTweaks = {
             },
             'spreadWings': {
                 callback: () => {
-                    const fly = document.querySelector('input[type="submit"][value^="Fly"]');
+                    const fly = document.querySelector('input[type="submit"][value^="Fly"],input[type="submit"][value^="Land"],input[type="submit"][value^="Ghostwalk"]');
                     if (fly) fly.accessKey = 'C';
                 },
                 name: 'Spread Your Wings',
