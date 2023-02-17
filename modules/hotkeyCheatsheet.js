@@ -2,7 +2,7 @@ const hotkeyCheatsheet = {
     module: async (api) => {
         const mod = await api.registerModule(
             'hotkeyCheatsheet',
-            'Collapsible Bloodhound Pane',
+            'Hotkey Cheatsheet',
             'global',
             'Adds a cheatsheet for hotkeys on the left side of the screen.',
         );
