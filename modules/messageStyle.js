@@ -201,8 +201,7 @@ const messageStyle = {
                 messageElement.style.resize = 'vertical';
                 messageElement.style.overflow = 'auto';
             }
-            const messages = messageElement.innerHTML.split('\n').join('').split('<br>');
-            const msgPromises = messages.map(singleMessage);
+            const messages = messageElement.innerHTML.split('\n').map(s => s.replace("<div>", "")).map(s => s.replace("</div>", "<br>")).join('').split('<br>');            const msgPromises = messages.map(singleMessage);
             await Promise.all(msgPromises);
             const finalMessages = [];
             for (const msgPromise of msgPromises) {
