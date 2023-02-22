@@ -7,7 +7,7 @@ const messageStyle = {
             'Adds styling to the message history to improve ease of reading. Includes combat actions, searches, speech, and more. Runs in both in-game and the character profile\'s week log',
         );
 
-        const pfx = '^[ ]?- (?:\\(\\d+ times\\) )?'; // message prefix
+        const pfx = '(?:\(\d+ times\)[\s]*?)?'; // message prefix
         const globalMatches = [
             { // Fix the a(n) text based on vowels
                 msg: /( a)(\((n)\)( [AEIOUaeiou])|\(n\)( [^AEIOUaeiou]))/g,
